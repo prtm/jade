@@ -13,17 +13,19 @@ from pathlib import Path
 
 import environ
 
-ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
-# jade/
-APPS_DIR = ROOT_DIR / "jade"
+ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
 env = environ.Env()
+env.read_env(str(ROOT_DIR / ".env"))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "83f)$o^l@-55=_n_vsj=i9wo!zi1ye+lg1ab6%u*asw)aa1e#e"
+SECRET_KEY = env(
+    "DJANGO_SECRET_KEY",
+    default="hE9w4ZQnwh4SUmWfNsmLZJ8VdGfriRbNEkuVteER6v6GlR95LJS6VbLHhzZgHuBX",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", False)
