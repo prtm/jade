@@ -13,7 +13,7 @@ from pathlib import Path
 
 import environ
 
-ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
+ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 env = environ.Env()
 env.read_env(str(ROOT_DIR / ".env"))
 
@@ -107,6 +107,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# STATIC
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = str(ROOT_DIR / "staticfiles")
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
+STATIC_URL = "/static/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
