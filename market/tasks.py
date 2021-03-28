@@ -1,3 +1,4 @@
+from datetime import datetime
 import pytz
 from celery import shared_task
 from django.utils import timezone
@@ -8,16 +9,16 @@ from .utils.bhav_helper import BhavHelper
 
 
 @shared_task
-def update_bhav_data() -> bool:
-    """[Fetch data on specific date and update redis]
+def update_bhav_data(provided_dt_utc: datetime) -> bool:
+    """[Fetch data on specific date if given else today date will be used and redis will be updated]
 
     Args:
-        dt (datetime): [date specific data will be extracted]
+        provided_dt_utc (datetime): [date specific data will be extracted]
 
     Returns:
         bool: [Represents is data loaded]
     """
-    dt_utc = timezone.datetime.now()  # utc
+    dt_utc = provided_dt_utc if provided_dt_utc else timezone.datetime.now()  # utc
     dt = dt_utc.replace(tzinfo=pytz.utc).astimezone(
         pytz.timezone("Asia/Calcutta")
     )  # ist
