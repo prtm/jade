@@ -1,13 +1,14 @@
-from datetime import datetime
+import pytz
+from celery import shared_task
+from django.utils import timezone
 
 from .repository import MarketRepository
 from .utils import unzip
 from .utils.bhav_helper import BhavHelper
-from celery import shared_task
 
 
 @shared_task
-def update_bhav_data(dt: datetime) -> bool:
+def update_bhav_data() -> bool:
     """[Fetch data on specific date and update redis]
 
     Args:
@@ -16,6 +17,10 @@ def update_bhav_data(dt: datetime) -> bool:
     Returns:
         bool: [Represents is data loaded]
     """
+    dt_utc = timezone.datetime.now()  # utc
+    dt = dt_utc.replace(tzinfo=pytz.utc).astimezone(
+        pytz.timezone("Asia/Calcutta")
+    )  # ist
     market_repository = MarketRepository()
     bhav_helper = BhavHelper()
     url = market_repository.get_bhav_zip_url_from_datetime(dt)
