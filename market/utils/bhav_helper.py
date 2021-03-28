@@ -72,7 +72,9 @@ class BhavHelper:
         return [json.loads(r) for r in result_list]
 
     def get_first_10_items(self) -> list:
-        return json.loads(self.redis.get(self.first_10_items))
+        results = self.redis.get(self.first_10_items)
+        if results:
+            return json.loads(results)
 
     def get_bhav_data_count(self) -> int:
         return parse_str_to_int(self.redis.get(self.total_items_count), 0)
