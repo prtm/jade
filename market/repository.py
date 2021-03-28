@@ -10,6 +10,9 @@ class MarketRepository:
     Repository for market interaction
     """
 
+    def __init__(self) -> None:
+        self.base_equity_url = "https://www.bseindia.com/download/BhavCopy/Equity/"
+
     def is_file_downloadable(self, url):
         response = requests.head(url, headers=scraper_headers.browser_headers)
         return (
@@ -21,7 +24,7 @@ class MarketRepository:
         day = str(dt.day).zfill(2)
         month = dt.strftime("%m")
         year = dt.strftime("%y")
-        return f"https://www.bseindia.com/download/BhavCopy/Equity/EQ{day}{month}{year}_CSV.ZIP"
+        return f"{self.base_equity_url}EQ{day}{month}{year}_CSV.ZIP"
 
     def get_bhav_copy(self, dt: datetime) -> Response:
         return requests.get(
