@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "jade",
     "market",
     "rest_framework",
-    "django_extensions",
 ]
 
 MIDDLEWARE = [
