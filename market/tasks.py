@@ -9,7 +9,7 @@ from .utils.bhav_helper import BhavHelper
 
 
 @shared_task
-def update_bhav_data(provided_dt_utc: datetime) -> bool:
+def update_bhav_data(provided_dt_utc: datetime = None) -> bool:
     """[Fetch data on specific date if given else today date will be used and redis will be updated]
 
     Args:
