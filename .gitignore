@@ -271,7 +271,7 @@ jade/media/
 
 .pytest_cache/
 
-### vscode ###
+### Vscode ###
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -280,3 +280,6 @@ jade/media/
 *.code-workspace
 
 
+
+### Env ###
+.env
