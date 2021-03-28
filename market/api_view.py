@@ -19,26 +19,6 @@ class MarketAPIView(viewsets.ViewSet):
         self.market_repository = MarketRepository()
         self.bhav_helper = BhavHelper()
 
-    def load_data(self, dt: datetime) -> bool:
-        """[load data based on specific datetime]
-
-        Args:
-            dt (datetime): [date specific data will be extracted]
-
-        Returns:
-            bool: [Represents is data loaded]
-        """
-        dt = datetime(2021, 3, 25)
-        url = self.market_repository.get_bhav_zip_url_from_datetime(dt)
-        if self.market_repository.is_file_downloadable(url):
-            response = self.market_repository.get_bhav_copy(dt)
-            filepath = unzip.unzip_file(response.content)
-            self.bhav_helper.load_bhav_data_csv(filepath=filepath)
-            print("redis data loaded")
-            return True
-        print("data load failed for {dt}")
-        return False
-
     @action(detail=False, methods=["get"], url_path="search")
     def search(self, request):
         """
@@ -77,7 +57,6 @@ class MarketAPIView(viewsets.ViewSet):
         """
         Get top 10 bhav items data
         """
-        self.load_data()
         start = self.request.query_params.get("start")
         stop = self.request.query_params.get("stop")
         if not start and not stop:
