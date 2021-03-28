@@ -35,5 +35,5 @@ def update_bhav_data(provided_dt_utc: datetime = None) -> bool:
 
         print("redis data loaded")
         return True
-    print("data load failed for {dt}")
+    print(f"data load failed for {dt}")
     return False
