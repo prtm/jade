@@ -3,8 +3,10 @@ from datetime import datetime
 from .repository import MarketRepository
 from .utils import unzip
 from .utils.bhav_helper import BhavHelper
+from celery import shared_task
 
 
+@shared_task
 def update_bhav_data(dt: datetime) -> bool:
     """[Fetch data on specific date and update redis]
 
