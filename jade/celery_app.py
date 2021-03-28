@@ -17,7 +17,7 @@ app.conf.beat_schedule = {
     # Executes every Day morning at 6:00 p.m.
     "every_day_redis_bhav_copy_update": {
         "task": "market.tasks.update_bhav_data",
-        "schedule": crontab(hour=18),
+        "schedule": crontab(minute=1),
         "args": (),
     },
 }

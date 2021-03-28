@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     "jade",
     "market",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -173,3 +175,7 @@ CELERY_TASK_SOFT_TIME_LIMIT = 60
 CELERY_ENABLE_UTC = False
 
 DJANGO_REDIS_CONNECTION_FACTORY = "jade.redis_pool.ConnectionFactory"
+
+# django-cors-headers
+# https://github.com/adamchainz/django-cors-headers#setup
+# CORS_URLS_REGEX = r"^/api/.*$"
