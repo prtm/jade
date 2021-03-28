@@ -4,6 +4,7 @@ REDIS_CACHE_URL=redis://localhost:6379/0
 
 # Django
 # ------------------------------------------------------------------------------
+DJANGO_SETTINGS_MODULE=jade.settings.dev
 DJANGO_SECRET_KEY=
 DJANGO_ADMIN_URL=admin/
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
