@@ -1,4 +1,6 @@
+import os
 from datetime import datetime
+
 import pytz
 from celery import shared_task
 from django.utils import timezone
@@ -29,6 +31,8 @@ def update_bhav_data(provided_dt_utc: datetime = None) -> bool:
         response = market_repository.get_bhav_copy(dt)
         filepath = unzip.unzip_file(response.content)
         bhav_helper.load_bhav_data_csv(filepath=filepath)
+        os.remove(filepath)
+
         print("redis data loaded")
         return True
     print("data load failed for {dt}")
