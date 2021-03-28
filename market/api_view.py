@@ -1,14 +1,15 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
+from django.utils import dateparse
 from jade.utils.utils import parse_str_to_int
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from . import tasks
 from .repository import MarketRepository
 from .utils.bhav_helper import BhavHelper
-from .utils import unzip
 
 # Create your views here.
 
@@ -50,6 +51,28 @@ class MarketAPIView(viewsets.ViewSet):
         return Response(
             {
                 "results": bhav_name_suggestions,
+            }
+        )
+
+    @action(detail=False, methods=["post"], url_path="load-bhav-data")
+    def load_bhav_data(self, request):
+        """
+        Manual update bhav data of specific date
+        """
+        date_str = self.request.data.get("date")
+        try:
+            parsed_date = dateparse.parse_date(date_str)
+        except:
+            return Response({"message": "enter valid date"})
+
+        if not parsed_date:
+            return Response({"message": "check date format"})
+
+        return Response(
+            {
+                "success": tasks.update_bhav_data(
+                    datetime.combine(parsed_date, datetime.min.time())
+                ),
             }
         )
 
