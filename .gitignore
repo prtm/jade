@@ -283,3 +283,7 @@ jade/media/
 
 ### Env ###
 .env
+
+### Celery ###
+celerybeat-schedule
+celerybeat.pid
