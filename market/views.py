@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.http.response import Http404
 
-from .utils import generate_bhav_csv
+from .utils.generate_bhav_csv import generate_bhav_copy_csv
 from .utils.bhav_helper import BhavHelper
 
 
@@ -13,8 +13,9 @@ def download_bhav_csv(request):
     q = request.GET.get("q", "").upper()
     delete_file = False
     if q and len(q) >= 2:
-        f = generate_bhav_csv(q, bhav_helper.get_bhav_data_by_prefix(q, max_count=-1))
-        file_path = os.path.join(settings.MEDIA_ROOT, f.path)
+        results = bhav_helper.get_bhav_data_by_prefix(q, max_count=-1)
+        file_path = generate_bhav_copy_csv(q, results)
+        file_path = os.path.join(settings.MEDIA_ROOT, file_path)
         delete_file = True
     else:
         file_path = os.path.join(os.getcwd(), "latest_bhav.csv")

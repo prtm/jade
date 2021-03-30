@@ -103,7 +103,7 @@ class BhavHelper:
             result["SC_NAME"] = name.split(":")[1]
             return result
 
-    def get_bhav_data_by_prefix(self, q: str, max_count=14) -> list:
+    def get_bhav_data_by_prefix(self, q: str, max_count: int = 14) -> list:
         name_keys = self.redis.zscan_iter(
             name=self.sc_name_sorted_set,
             match=f"BHAV:{q}*",
