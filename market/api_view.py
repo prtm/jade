@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from typing import Any
 
 from django.utils import dateparse
@@ -95,7 +95,6 @@ class MarketAPIView(viewsets.ViewSet):
         """
         Get fist n bhav items data
         """
-        # tasks.update_bhav_data(datetime(2021, 3, 25))
         start = self.request.query_params.get("start")
         stop = self.request.query_params.get("stop")
         if not start and not stop:
