@@ -20,15 +20,32 @@ class MarketAPIView(viewsets.ViewSet):
         self.market_repository = MarketRepository()
         self.bhav_helper = BhavHelper()
 
+    @action(detail=False, methods=["get"], url_path="search-by-extract-name")
+    def search_by_extact_name(self, request):
+        """
+        get data by extract name
+        """
+        q = self.request.query_params.get("q", "").upper()
+        if not q or len(q) < 2:
+            return Response({"error": "query must contains aleast 2 letters"})
+        results = self.bhav_helper.get_bhav_data_by_extact_name(name=q)
+        if not results:
+            results = []
+        return Response(
+            {
+                "results": results,
+            }
+        )
+
     @action(detail=False, methods=["get"], url_path="search")
     def search(self, request):
         """
         Search by name
         """
         q = self.request.query_params.get("q", "").upper()
-        if not q or len(q) < 3:
-            return Response({"error": "query must contains aleast 3 letters"})
-        results = self.bhav_helper.search_bhav_data_by_name(name=q)
+        if not q or len(q) < 2:
+            return Response({"error": "query must contains aleast 2 letters"})
+        results = self.bhav_helper.get_bhav_data_by_prefix(q=q)
         if not results:
             results = []
         return Response(
@@ -40,14 +57,12 @@ class MarketAPIView(viewsets.ViewSet):
     @action(detail=False, methods=["get"], url_path="search-suggestions")
     def search_suggestions(self, request):
         """
-        Search by name suggestions
+        get name suggestions
         """
         q = self.request.query_params.get("q", "").upper()
-        if not q or len(q) < 3:
-            return Response({"error": "query must contains aleast 3 letters"})
-        bhav_name_suggestions = self.bhav_helper.search_bhav_data_by_name_suggestions(
-            q=q
-        )
+        if not q or len(q) < 2:
+            return Response({"error": "query must contains aleast 2 letters"})
+        bhav_name_suggestions = self.bhav_helper.get_name_suggestions(q=q)
         return Response(
             {
                 "results": bhav_name_suggestions,
@@ -80,6 +95,7 @@ class MarketAPIView(viewsets.ViewSet):
         """
         Get fist n bhav items data
         """
+        # tasks.update_bhav_data(datetime(2021, 3, 25))
         start = self.request.query_params.get("start")
         stop = self.request.query_params.get("stop")
         if not start and not stop:

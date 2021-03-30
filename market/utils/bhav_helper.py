@@ -13,6 +13,7 @@ class BhavHelper:
         self.last_updated = "last_updated"
         self.total_items_count = "total_items_count"
         self.sc_name_sorted_set = "sc_name_sorted_set"
+        self.sc_name_hash_stored = "sc_name_hash_stored"
 
     def load_bhav_data_csv(self, filepath: str) -> None:
         """[load data from bhav csv to redis]
@@ -23,8 +24,6 @@ class BhavHelper:
         # create redis pipeline
         pipeline = self.redis.pipeline(transaction=True)
         pipeline.flushdb()
-        first_n_items_list = []
-        first_n_items_counter = 0
         total_items_counter = 0
         with open(filepath, "r") as csv_file:
             csv_dict_reader = csv.DictReader(csv_file)
@@ -37,23 +36,17 @@ class BhavHelper:
                     "HIGH": row["HIGH"],
                     "LOW": row["LOW"],
                 }
-                data_with_name = dict(data)
-                data_with_name.update(
-                    {
-                        "SC_NAME": row["SC_NAME"].strip(),
-                    }
-                )
-                if first_n_items_counter < 15:
-                    first_n_items_list.append(data_with_name)
-                    first_n_items_counter += 1
 
-                pipeline.set(prefixed_sc_name, json.dumps(data))
+                pipeline.hset(
+                    name=self.sc_name_hash_stored,
+                    key=prefixed_sc_name,
+                    value=json.dumps(data),
+                )
                 pipeline.zadd(
                     self.sc_name_sorted_set,
-                    {json.dumps(data_with_name): total_items_counter},
+                    {prefixed_sc_name: 0},
                 )
                 total_items_counter += 1
-            pipeline.set(self.first_n_items, json.dumps(first_n_items_list))
             pipeline.set(self.last_updated, str(timezone.now().date()))
             pipeline.set(self.total_items_count, total_items_counter)
 
@@ -64,29 +57,63 @@ class BhavHelper:
     def get_last_updated_time(self) -> str:
         return self.redis.get(self.last_updated)
 
-    def get_bhav_data(self, start=0, stop=9) -> list:
-        result_list = self.redis.zrangebyscore(
-            self.sc_name_sorted_set, min=start, max=stop
+    def get_bhav_data(self, start=0, stop=14) -> list:
+        name_keys = self.redis.zrange(
+            name=self.sc_name_sorted_set,
+            start=start,
+            end=stop,
         )
+        results = []
 
-        return [json.loads(r) for r in result_list]
+        for name_key in name_keys:
+            data = json.loads(self.redis.hget(self.sc_name_hash_stored, name_key))
+            data["SC_NAME"] = name_key.split(":")[1]
+            results.append(data)
+        return results
 
     def get_first_n_items(self) -> list:
         results = self.redis.get(self.first_n_items)
         if results:
             return json.loads(results)
+        else:
+            results = self.get_bhav_data(start=0, stop=14)
+            self.redis.set(self.first_n_items, json.dumps(results))
+            return results
 
     def get_bhav_data_count(self) -> int:
         return parse_str_to_int(self.redis.get(self.total_items_count), 0)
 
-    def search_bhav_data_by_name_suggestions(self, q: str) -> list:
-        result_list = self.redis.keys(f"BHAV:{q}*")
+    def get_name_suggestions(self, q: str, max_count: int = 10) -> list:
+        name_keys = self.redis.zscan_iter(
+            name=self.sc_name_sorted_set,
+            match=f"BHAV:{q}*",
+        )
+        results = []
+        for key, _ in name_keys:
+            if max_count == 0:
+                break
+            results.append(key.split(":")[1])
+            max_count -= 1
+        return results
 
-        return [key.split(":")[1] for key in result_list]
-
-    def search_bhav_data_by_name(self, name: str) -> list:
-        result_str = self.redis.get(f"BHAV:{name}")
-        if result_str:
-            result = json.loads(result_str)
-            result["SC_NAME"] = name
+    def get_bhav_data_by_extact_name(self, name: str) -> list:
+        result_json = self.redis.hget(self.sc_name_hash_stored, f"BHAV:{name}")
+        if result_json:
+            result = json.loads(result_json)
+            result["SC_NAME"] = name.split(":")[1]
             return result
+
+    def get_bhav_data_by_prefix(self, q: str, max_count=14) -> list:
+        name_keys = self.redis.zscan_iter(
+            name=self.sc_name_sorted_set,
+            match=f"BHAV:{q}*",
+        )
+        results = []
+        for name_key, _ in name_keys:
+            if max_count == 0:
+                break
+            data = json.loads(self.redis.hget(self.sc_name_hash_stored, name_key))
+            data["SC_NAME"] = name_key.split(":")[1]
+            results.append(data)
+            max_count -= 1
+        return results
