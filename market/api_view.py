@@ -78,15 +78,15 @@ class MarketAPIView(viewsets.ViewSet):
 
     def list(self, request):
         """
-        Get top 10 bhav items data
+        Get fist n bhav items data
         """
         start = self.request.query_params.get("start")
         stop = self.request.query_params.get("stop")
         if not start and not stop:
-            results = self.bhav_helper.get_first_10_items()
+            results = self.bhav_helper.get_first_n_items()
         else:
             start = parse_str_to_int(start, default=0)
-            stop = parse_str_to_int(stop, default=9)
+            stop = parse_str_to_int(stop, default=14)
             results = self.bhav_helper.get_bhav_data(start=start, stop=stop)
 
         return Response(
