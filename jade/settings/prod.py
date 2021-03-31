@@ -12,5 +12,5 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 CORS_ALLOWED_ORIGINS = [
-    "https://awesome-jade.netlify.app/",
+    "https://awesome-jade.netlify.app",
 ]
