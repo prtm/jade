@@ -100,7 +100,7 @@ class BhavHelper:
         result_json = self.redis.hget(self.sc_name_hash_stored, f"BHAV:{name}")
         if result_json:
             result = json.loads(result_json)
-            result["SC_NAME"] = name.split(":")[1]
+            result["SC_NAME"] = name
             return result
 
     def get_bhav_data_by_prefix(self, q: str, max_count: int = 14) -> list:
