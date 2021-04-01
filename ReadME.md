@@ -40,8 +40,17 @@ pip3 install pipenv
 
 pipenv install
 
-# add env file
-cp docs/env_example .env
+# Add env file
+cp docs/env_example .env 
+```
+
+### For Celery task
+```
+# Run celery worker
+celery worker --app=jade.celery_app --loglevel=info
+
+# Run celery beat
+celery beat --app=jade.celery_app --loglevel=info
 ```
 
 Checkout Jade-frontend [here](https://github.com/prtm/jade-frontend).
