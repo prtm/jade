@@ -65,7 +65,7 @@ ROOT_URLCONF = "jade.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["jade-frontend/dist"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(ROOT_DIR / "staticfiles")
+STATIC_ROOT = str(ROOT_DIR / "jade-frontend" / "dist" / "static")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 
@@ -133,12 +133,6 @@ USE_TZ = True
 # ADMIN
 # ------------------------------------------------------------------------------
 ADMIN_URL = env("DJANGO_ADMIN_URL")
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = "/static/"
 
 CACHES = {
     "default": {
