@@ -1,0 +1,3 @@
+[submodule "jade-frontend"]
+	path = jade-frontend
+	url = https://github.com/prtm/jade-frontend
