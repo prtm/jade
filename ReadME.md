@@ -14,20 +14,34 @@ A BSE bhav browser for the recent activity that has taken place in the market.
 
 ## Installation
 
-1. [Python3](https://www.python.org/downloads/) required
-2. Create isolated virtual python environment
+Vue JS
+```shell
+cd jade-frontend
+
+# Install dependencies
+npm install
+
+# Copy env file
+cp docs/env_example .env
+
+# Production build
+npm run build
 ```
-    pip3 install pipenv
+
+[Python3](https://www.python.org/downloads/)
 ```
-3. Install all dependencies for this project. 
-```
+# Create isolated virtual python environment
+pip3 install pipenv
+
+
+# Install all dependencies for this project. 
+
 # Specific requirement file found in requirements folder
 
 pipenv install
-```
-4. add env file
-``` 
+
+# add env file
 cp docs/env_example .env
 ```
 
-Checkout [Jade-frontend](https://github.com/prtm/jade-frontend)
+Checkout Jade-frontend [here](https://github.com/prtm/jade-frontend).
